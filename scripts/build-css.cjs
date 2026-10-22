@@ -39,6 +39,12 @@ const lightVariables = {
   "number-negative": "0 48% 38%",
   "ease-out-strong": "cubic-bezier(0.23, 1, 0.32, 1)",
   "ease-hero": "cubic-bezier(0.16, 1, 0.3, 1)",
+  "color-ease": "cubic-bezier(0.4, 0, 0.2, 1)",
+  "duration-press": "80ms",
+  "duration-button": "140ms",
+  "duration-row": "180ms",
+  "duration-drop": "320ms",
+  "duration-toast": "6s",
   "curtain-offset": "-12px",
   "curtain-duration": "480ms",
   "curtain-stagger": "80ms",
@@ -79,9 +85,13 @@ const darkVariables = {
 
 const commentBefore = {
   background: "  /* Light mode: clean white + near-black */",
-  "ease-out-strong": "  /* Emil Kowalski strong ease-out. Shared by landing-page motion. */",
+  "ease-out-strong":
+    "  /* Movement curve, including the primary lift and its shadow. Color uses --color-ease. */",
   "ease-hero":
     "  /* Hero fade-up curve. Curtain reveals and the contribution pattern use the same ease. */",
+  "color-ease": "  /* Color, border, and background feedback. */",
+  "duration-press":
+    "  /* Press 80ms, buttons 140ms, rows 180ms, drop and toast entrance 320ms. Toast holds for 6s. */",
   "curtain-offset":
     "  /* Same 12px travel and 80ms step as the hero intro, kept inside 400–500ms. */",
 };
@@ -273,73 +283,228 @@ ${renderKeyframes(keyframes)}
   opacity: 0;
 }
 
-.button {
+/* Interaction ranks. Movement uses --ease-out-strong. Color, border, and background use --color-ease. */
+.button-primary,
+.button-secondary,
+.button-file,
+.button-icon,
+.text-link,
+.toast-dismiss {
+  margin: 0;
+  border-radius: 0;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.button-primary,
+.button-secondary,
+.button-file,
+.toast-dismiss {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   height: 2.5rem;
-  margin: 0;
   padding: 0 1rem;
-  border: 1px solid transparent;
-  border-radius: calc(var(--radius) - 2px);
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  font-family: inherit;
+  border: 1px solid hsl(var(--border));
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.35rem;
   letter-spacing: 0;
   text-transform: none;
-  text-decoration: none;
   white-space: nowrap;
-  cursor: pointer;
-  appearance: none;
+}
+
+.button-primary {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: none;
   transition:
-    color 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 100ms var(--ease-out-strong);
+    transform var(--duration-button) var(--ease-out-strong),
+    box-shadow var(--duration-button) var(--ease-out-strong);
 }
 
-.button:hover {
-  background: hsl(var(--primary) / 0.9);
+@media (hover: hover) {
+  .button-primary:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elev-2);
+  }
 }
 
-.button:active {
+.button-primary:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: none;
+  transition-duration: var(--duration-press);
+}
+
+.button-secondary,
+.button-file,
+.toast-dismiss {
+  background: transparent;
+  color: hsl(var(--foreground));
+  transition:
+    background-color var(--duration-button) var(--color-ease),
+    border-color var(--duration-button) var(--color-ease),
+    transform var(--duration-press) var(--ease-out-strong);
+}
+
+@media (hover: hover) {
+  .button-secondary:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-file:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .toast-dismiss:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    background: hsl(var(--accent));
+    border-color: hsl(var(--ring));
+    transform: none;
+  }
+}
+
+.button-secondary:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+.button-file:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+.toast-dismiss:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+}
+
+.button-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid hsl(var(--border));
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  transition:
+    color var(--duration-button) var(--color-ease),
+    background-color var(--duration-button) var(--color-ease),
+    border-color var(--duration-button) var(--color-ease),
+    transform var(--duration-press) var(--ease-out-strong);
+}
+
+@media (hover: hover) {
+  .button-icon:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    color: hsl(var(--foreground));
+  }
+}
+
+.button-icon:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+  transform: scale(0.92);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  transition:
+    color var(--duration-button) var(--color-ease),
+    transform var(--duration-press) var(--ease-out-strong);
+}
+
+@media (hover: hover) {
+  .text-link:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    color: hsl(var(--foreground));
+  }
+}
+
+.text-link:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
   transform: scale(0.97);
 }
 
-.button:focus-visible {
-  outline: 2px solid hsl(var(--ring));
+.button-primary:disabled,
+.button-primary.is-disabled,
+.button-primary[aria-disabled="true"],
+.button-secondary:disabled,
+.button-secondary.is-disabled,
+.button-secondary[aria-disabled="true"],
+.button-file:disabled,
+.button-file.is-disabled,
+.button-file[aria-disabled="true"],
+.button-icon:disabled,
+.button-icon.is-disabled,
+.button-icon[aria-disabled="true"],
+.text-link:disabled,
+.text-link.is-disabled,
+.text-link[aria-disabled="true"],
+.toast-dismiss:disabled,
+.toast-dismiss.is-disabled,
+.toast-dismiss[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+.button-primary:focus-visible,
+.button-secondary:focus-visible,
+.button-file:focus-visible,
+.button-icon:focus-visible,
+.text-link:focus-visible,
+.toast-dismiss:focus-visible,
+.input:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.drop-zone:focus-within {
+  outline: 1px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
-.button:disabled,
-.button[aria-disabled="true"] {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.button.button-secondary {
-  border-color: hsl(var(--border));
-  background: hsl(var(--secondary));
-  color: hsl(var(--secondary-foreground));
-}
-
-.button.button-secondary:hover {
-  background: hsl(var(--secondary) / 0.8);
-}
-
-.button.button-ghost {
-  border-color: transparent;
-  background: transparent;
-  color: hsl(var(--muted-foreground) / 0.9);
-}
-
-.button.button-ghost:hover {
-  background: hsl(var(--accent) / 0.3);
+.input {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: 0;
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
+  font: inherit;
+  line-height: 1.35rem;
+}
+
+.drop-zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.6);
+  color: hsl(var(--foreground));
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--duration-button) var(--color-ease);
+}
+
+.dark .drop-zone {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.drop-zone.is-drag-over {
+  border-color: hsl(var(--foreground));
+}
+
+.drop-zone-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .row {
@@ -350,13 +515,67 @@ ${renderKeyframes(keyframes)}
   min-height: 3rem;
   padding: 0.75rem 0;
   border-bottom: 1px solid hsl(var(--border));
+  border-radius: 0;
   color: hsl(var(--foreground));
   font-size: 0.875rem;
   line-height: 1.35rem;
 }
 
-.row:last-child {
+.row:not(.row-reorderable):last-child {
   border-bottom-width: 0;
+}
+
+.row-reorderable {
+  position: relative;
+  padding: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  background: rgba(244, 245, 246, 0.92);
+  cursor: grab;
+  transition:
+    background-color var(--duration-row) var(--color-ease),
+    border-color var(--duration-row) var(--color-ease);
+}
+
+.dark .row-reorderable {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.row-reorderable:active {
+  cursor: grabbing;
+}
+
+.row-reorderable[draggable="false"],
+.row-reorderable[draggable="false"]:active {
+  cursor: default;
+}
+
+.row-placeholder,
+.dark .row-placeholder {
+  background: transparent;
+  border-style: dashed;
+  cursor: default;
+}
+
+.row-placeholder:active {
+  cursor: default;
+}
+
+.row-placeholder .row-body {
+  visibility: hidden;
+}
+
+.row-moved {
+  z-index: 1;
+  border-color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.dark .row-moved {
+  background: hsl(var(--accent));
+}
+
+.row-dropped {
+  animation: row-drop var(--duration-drop) var(--ease-out-strong) both;
 }
 
 .progress {
@@ -380,6 +599,11 @@ ${renderKeyframes(keyframes)}
   background: hsl(var(--foreground));
 }
 
+.progress-success > .progress-bar,
+.progress-bar.progress-success {
+  background: hsl(var(--number-positive));
+}
+
 progress.progress::-webkit-progress-bar {
   background: hsl(var(--border));
 }
@@ -394,7 +618,47 @@ progress.progress::-moz-progress-bar {
   background: hsl(var(--foreground));
 }
 
+progress.progress.progress-success::-webkit-progress-value {
+  background: hsl(var(--number-positive));
+}
+
+progress.progress.progress-success::-moz-progress-bar {
+  background: hsl(var(--number-positive));
+}
+
+.toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(24rem, calc(100% - 2rem));
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  box-shadow: var(--shadow-elev-2);
+  font-size: 0.875rem;
+  line-height: 1.35rem;
+  animation:
+    toast-in var(--duration-drop) var(--ease-out-strong) both,
+    toast-out var(--duration-row) var(--color-ease) var(--duration-toast) forwards;
+}
+
+.toast p {
+  margin: 0;
+  color: inherit;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .analytics-rise,
   .portfolio-sync-bar,
   .portfolio-skeleton-block,
@@ -419,9 +683,58 @@ progress.progress::-moz-progress-bar {
     transform: none;
   }
 
-  .button,
-  .button:active {
+  .button-primary,
+  .button-secondary,
+  .button-file,
+  .button-icon,
+  .text-link,
+  .toast-dismiss,
+  .drop-zone,
+  .row-reorderable,
+  .row-dropped,
+  .toast {
+    animation: none;
+    transition: none;
+  }
+
+  .button-primary:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-primary:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-secondary:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-secondary:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-file:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-file:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-icon:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .button-icon:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .text-link:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .text-link:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .toast-dismiss:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .toast-dismiss:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]),
+  .row-dropped {
     transform: none;
+    transition: none;
+  }
+
+  @media (hover: hover) {
+    .button-primary:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+      transform: none;
+      box-shadow: var(--shadow-elev-2);
+    }
+  }
+
+  .button-primary:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    transform: none;
+    box-shadow: none;
+    transition: none;
+  }
+
+  .row-dropped {
+    opacity: 1;
+  }
+
+  .toast {
+    opacity: 1;
+    transform: none;
+    animation: toast-out 0s linear var(--duration-toast) forwards;
   }
 }
 `;
@@ -466,6 +779,20 @@ function assertPreset(preset) {
   assert(colors["number-positive"].includes("--number-positive"), "missing number-positive");
   assert(colors["number-negative"].includes("--number-negative"), "missing number-negative");
 
+  const { transitionDuration, transitionTimingFunction } = preset.theme.extend;
+  assert(transitionDuration.press === "var(--duration-press)", "press duration must be 80ms token");
+  assert(transitionDuration.button === "var(--duration-button)", "button duration must be 140ms token");
+  assert(transitionDuration.row === "var(--duration-row)", "row duration must be 180ms token");
+  assert(transitionDuration.drop === "var(--duration-drop)", "drop duration must be 320ms token");
+  assert(
+    transitionTimingFunction["out-strong"] === "var(--ease-out-strong)",
+    "movement easing must use --ease-out-strong"
+  );
+  assert(
+    transitionTimingFunction.color === "var(--color-ease)",
+    "color easing must use --color-ease"
+  );
+
   const requiredAnimations = {
     "analytics-rise": "analytics-rise",
     "portfolio-sync-sweep": "portfolio-sync-sweep",
@@ -473,6 +800,9 @@ function assertPreset(preset) {
     fadeUp: "fade-up",
     "contribution-flag": "contribution-flag",
     "curtain-fall": "curtain-fall",
+    "row-drop": "row-drop",
+    "toast-in": "toast-in",
+    "toast-out": "toast-out",
   };
   for (const [keyframeName, animationName] of Object.entries(requiredAnimations)) {
     assert(keyframes[keyframeName], `preset is missing keyframes.${keyframeName}`);
@@ -487,6 +817,8 @@ function assertPreset(preset) {
   collectVariableNames(colors, referencedVariables);
   collectVariableNames(borderRadius, referencedVariables);
   collectVariableNames(boxShadow, referencedVariables);
+  collectVariableNames(transitionDuration, referencedVariables);
+  collectVariableNames(transitionTimingFunction, referencedVariables);
   collectVariableNames(keyframes, referencedVariables);
   collectVariableNames(animation, referencedVariables);
 
@@ -507,25 +839,80 @@ function assertStylesheet(stylesheet) {
     "--radius: 0.5rem;",
     '--font-body: "Roboto", sans-serif;',
     "family=Roboto",
-    ".button",
+    "--ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);",
+    "--color-ease: cubic-bezier(0.4, 0, 0.2, 1);",
+    "--duration-press: 80ms;",
+    "--duration-button: 140ms;",
+    "--duration-row: 180ms;",
+    "--duration-drop: 320ms;",
+    "--duration-toast: 6s;",
+    ".button-primary",
     ".button-secondary",
-    ".button-ghost",
+    ".button-file",
+    ".button-icon",
+    ".text-link",
+    ".toast-dismiss",
+    ".drop-zone",
+    ".drop-zone.is-drag-over",
+    ".drop-zone-input",
     ".row",
+    ".row-reorderable",
+    ".row-placeholder",
+    ".row-moved",
+    ".row-dropped",
+    ".row-body",
     ".progress",
     ".progress-bar",
+    ".progress-success",
+    ".toast",
+    ".input",
     "@keyframes fadeUp",
     "@keyframes analytics-rise",
+    "@keyframes row-drop",
+    "@keyframes toast-in",
+    "@keyframes toast-out",
     "prefers-reduced-motion",
+    "@media (hover: hover)",
+    "translateY(-2px)",
+    "translateY(1px) scale(0.97)",
+    "scale(0.98)",
+    "scale(0.92)",
+    "scale(0.97)",
+    "translateY(-8px)",
+    "border-style: dashed",
+    "cursor: grab",
+    "opacity: 0.4",
+    "cursor: not-allowed",
+    "outline: 1px solid hsl(var(--ring));",
+    "outline-offset: 2px;",
     "border-radius: 0;",
+    "hsl(var(--number-positive))",
+    "rgba(255, 255, 255, 0.6)",
+    "rgba(255, 255, 255, 0.08)",
   ];
 
   for (const snippet of requiredSnippets) {
     assert(stylesheet.includes(snippet), `ui.css is missing ${snippet}`);
   }
 
+  assert(!stylesheet.includes(".button-ghost"), "ui.css must not keep the generic ghost button");
+  assert(!/\.button[\s,{]/.test(stylesheet), "ui.css must not keep the generic .button class");
+  assert(!stylesheet.includes("pointer-events: none"), "disabled controls must keep pointer events");
   assert(!stylesheet.includes("linear-gradient"), "ui.css must not add gradients");
   assert(!stylesheet.includes("border-radius: 999"), "ui.css must not add pills");
   assert(!stylesheet.includes("border-radius: 9999px"), "ui.css must not add pills");
+  assert(
+    !stylesheet.includes("border-radius: calc(var(--radius) - 2px)"),
+    "interaction controls must be square"
+  );
+  assert(!stylesheet.includes("outline: 2px"), "focus ring must be the 1px xml outline");
+
+  const dropZoneSource = fs.readFileSync(path.join(packageRoot, "src", "drop-zone.ts"), "utf8");
+  assert(
+    dropZoneSource.includes('const DROP_ZONE_DRAG_OVER_CLASS_NAME = "is-drag-over"'),
+    "drop-zone helper must toggle is-drag-over"
+  );
+  assert(dropZoneSource.includes("dragDepth"), "drop-zone helper must count nested dragenter and dragleave");
 }
 
 function main() {

@@ -1,6 +1,6 @@
 # @camib0b/ui
 
-Shared design system for [camilaescudero.cl](https://camilaescudero.cl) and its standalone tools. Tokens match the site: Roboto, near-black on white, a 0.5rem radius, and no gradients or pills.
+Shared design system for [camilaescudero.cl](https://camilaescudero.cl) and its standalone tools. Tokens match the site: Roboto, near-black on white, and no gradients or pills. The site radius token stays `0.5rem`. Buttons, the file picker, icon buttons, rows, the drop zone, toasts, and `.input` use square corners.
 
 Install from GitHub:
 
@@ -16,31 +16,122 @@ xml-viz and any other page without a build step link the prebuilt stylesheet:
 <link rel="stylesheet" href="./node_modules/@camib0b/ui/dist/ui.css" />
 ```
 
-`dist/ui.css` defines the site's CSS variables, base typography, and the button, row, and progress classes the concat tool uses.
+`dist/ui.css` is the interaction source for the site and its tools. Rebuild it with `npm run build`. The build reads `preset.js` and writes `dist/ui.css`. Add `class="dark"` to `<html>` for the dark palette.
+
+## Interaction classes
+
+Hover feedback is limited to devices that actually hover (`@media (hover: hover)`). Press feedback applies everywhere. Disabled controls, including `.is-disabled` and `aria-disabled="true"`, use 40% opacity and `cursor: not-allowed`. They do not set `pointer-events: none`.
+
+Buttons, icon buttons, text links, the dismiss button, and inputs share one focus ring: a 1px outline, 2px outside the control, in `--ring`. The drop zone uses that same ring for `:focus-within`.
+
+| Class | Rank | Hover | Press |
+| --- | --- | --- | --- |
+| `button-primary` | Primary | Lifts 2px and gains `--shadow-elev-2` (140ms) | Moves down 1px, scales to 0.97, shadow drops (80ms) |
+| `button-secondary` | Secondary | Faint `--accent` fill and a darker `--ring` border (140ms). No lift | Scales to 0.98 (80ms) |
+| `button-file` | Secondary | Same faint fill and darker border. No lift | Scales to 0.98 (80ms) |
+| `button-icon` | Icon | Grey (`--muted-foreground`) to dark (`--foreground`) | Scales to 0.92 (80ms) |
+| `text-link` | Text | Color changes from muted to foreground | Scales to 0.97 (80ms) |
+| `toast-dismiss` | Secondary | Same as `button-secondary`. Square corners | Scales to 0.98 (80ms) |
 
 ```html
-<button class="button" type="button">Concat</button>
-<button class="button button-secondary" type="button">Add files</button>
+<button class="button-primary" type="button">Concat</button>
+<button class="button-file" type="button">Add files</button>
+<button class="button-secondary" type="button">Cancel</button>
+<button class="button-icon" type="button" aria-label="Remove">×</button>
+<button class="text-link" type="button">Details</button>
+<input class="input" type="text" />
+```
 
-<div class="row">
-  <span>chapter-01.xml</span>
-  <button class="button button-ghost" type="button">Remove</button>
+`button-file` is the file picker. It is a secondary button and never uses the primary lift.
+
+### Durations and easing
+
+Both curves are CSS variables and Tailwind timing utilities (`ease-out-strong`, `ease-color`).
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--duration-press` | 80ms | Press scale and the primary press |
+| `--duration-button` | 140ms | Button color, lift, and shadow |
+| `--duration-row` | 180ms | Row color and border |
+| `--duration-drop` | 320ms | Row landing and toast entrance |
+| `--duration-toast` | 6s | Toast hold before it closes |
+| `--ease-out-strong` | `cubic-bezier(0.23, 1, 0.32, 1)` | Movement, including the primary lift and its shadow |
+| `--color-ease` | `cubic-bezier(0.4, 0, 0.2, 1)` | Color, border, and background |
+
+Tailwind utilities: `duration-press`, `duration-button`, `duration-row`, `duration-drop`.
+
+`prefers-reduced-motion` removes movement and animation. Color and shadow still change: the primary hover shadow still appears, and the press still drops that shadow. The toast stays put and disappears after 6 seconds without fading.
+
+### Drop zone
+
+The zone uses the concat surface (white at 60% opacity, 8% in dark) and a 1px border. While `is-drag-over` is set, the border darkens to the foreground color.
+
+```html
+<label class="drop-zone">
+  Drop files here
+  <input class="drop-zone-input" type="file" />
+  <button class="button-file" type="button">Add files</button>
+</label>
+```
+
+`bindDropZone` is plain JavaScript. It counts `dragenter` and `dragleave` so a child inside the zone does not flicker the border. Pass a drop handler if you want the files. Call the returned function to remove the listeners.
+
+```js
+const { bindDropZone } = require("@camib0b/ui/drop-zone");
+
+const unbindDropZone = bindDropZone(document.querySelector(".drop-zone"), function (event) {
+  const droppedFiles = event.dataTransfer && event.dataTransfer.files;
+  return droppedFiles;
+});
+```
+
+The same function is exported from `@camib0b/ui`.
+
+### Reorderable rows
+
+A static `.row` is only a list row. Add `row-reorderable` for a grab cursor (`grabbing` while pressed, `default` when `draggable="false"`). `row-placeholder` is the dashed empty slot; put the visible contents in `row-body` so they hide while the slot is empty. `row-moved` is the dark foreground border on the row that moved. `row-dropped` plays the 8px, 320ms landing animation.
+
+```html
+<div class="row row-reorderable" draggable="true">
+  <span class="row-body">chapter-01.xml</span>
+  <button class="button-icon" type="button" aria-label="Remove">×</button>
 </div>
 
+<div class="row row-reorderable row-placeholder">
+  <span class="row-body">chapter-01.xml</span>
+</div>
+
+<div class="row row-reorderable row-moved row-dropped">
+  <span class="row-body">chapter-02.xml</span>
+</div>
+```
+
+### Progress
+
+The bar is 4px, square, and flat: foreground (near-black on white) on the border-colored track. `progress-success` turns the fill green (`--number-positive`).
+
+```html
 <div class="progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
   <div class="progress-bar" style="width: 40%"></div>
 </div>
+
+<div class="progress progress-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+  <div class="progress-bar" style="width: 100%"></div>
+</div>
+
+<progress class="progress progress-success" value="100" max="100">Done</progress>
 ```
 
-A native progress element uses the same track class:
+### Toast
+
+A square bordered box, fixed to the bottom right. It fades up 8px over 320ms, holds for 6 seconds, then fades. The dismiss control is a square secondary button. Removing it on click is up to the page. The timed close is the CSS animation.
 
 ```html
-<progress class="progress" value="40" max="100">40%</progress>
+<div class="toast" role="status">
+  <p>Joined 3 files.</p>
+  <button class="toast-dismiss" type="button">Dismiss</button>
+</div>
 ```
-
-Add `class="dark"` to `<html>` for the site's dark palette. Buttons use the site's medium radius (`--radius` minus 2px). Progress stays square.
-
-Rebuild the stylesheet with `npm run build`. It reads `preset.js` and writes `dist/ui.css`.
 
 ## React and Tailwind
 
@@ -88,10 +179,11 @@ Named entry points:
 
 | Import | Contents |
 | --- | --- |
-| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle` |
+| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle`, `bindDropZone` |
 | `@camib0b/ui/preset` | Tailwind preset |
 | `@camib0b/ui/ui.css` | Prebuilt stylesheet |
 | `@camib0b/ui/header` | `SiteHeader` |
 | `@camib0b/ui/language` | Language provider and hook |
+| `@camib0b/ui/drop-zone` | `bindDropZone` for plain pages |
 
 React and Tailwind are optional peer dependencies. A plain HTML page only needs the CSS file.

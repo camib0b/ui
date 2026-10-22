@@ -34,6 +34,11 @@
       "types": "./dist/language-context.d.ts",
       "require": "./dist/language-context.js",
       "default": "./dist/language-context.js"
+    },
+    "./drop-zone": {
+      "types": "./dist/drop-zone.d.ts",
+      "require": "./dist/drop-zone.js",
+      "default": "./dist/drop-zone.js"
     }
   },
   "sideEffects": [

@@ -13,6 +13,8 @@ declare const preset: {
       colors: Record<string, unknown>;
       borderRadius: Record<string, string>;
       boxShadow: Record<string, string>;
+      transitionDuration: Record<string, string>;
+      transitionTimingFunction: Record<string, string>;
       keyframes: Record<string, Record<string, Record<string, string>>>;
       animation: Record<string, string>;
     };
