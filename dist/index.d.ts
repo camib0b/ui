@@ -4,3 +4,4 @@ export { LanguageToggle } from "./language-toggle";
 export { SiteHeader } from "./site-header";
 export type { SiteHeaderProps } from "./site-header";
 export { DROP_ZONE_DRAG_OVER_CLASS_NAME, bindDropZone } from "./drop-zone";
+export { ATTENTION_PULSE_CLASS_NAME, startAttentionPulse } from "./attention-pulse";

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bindDropZone = exports.DROP_ZONE_DRAG_OVER_CLASS_NAME = exports.SiteHeader = exports.LanguageToggle = exports.useLanguage = exports.languageFromDevice = exports.LanguageProvider = exports.LANGUAGE_STORAGE_KEY = void 0;
+exports.startAttentionPulse = exports.ATTENTION_PULSE_CLASS_NAME = exports.bindDropZone = exports.DROP_ZONE_DRAG_OVER_CLASS_NAME = exports.SiteHeader = exports.LanguageToggle = exports.useLanguage = exports.languageFromDevice = exports.LanguageProvider = exports.LANGUAGE_STORAGE_KEY = void 0;
 var language_context_1 = require("./language-context");
 Object.defineProperty(exports, "LANGUAGE_STORAGE_KEY", { enumerable: true, get: function () { return language_context_1.LANGUAGE_STORAGE_KEY; } });
 Object.defineProperty(exports, "LanguageProvider", { enumerable: true, get: function () { return language_context_1.LanguageProvider; } });
@@ -13,3 +13,6 @@ Object.defineProperty(exports, "SiteHeader", { enumerable: true, get: function (
 var drop_zone_1 = require("./drop-zone");
 Object.defineProperty(exports, "DROP_ZONE_DRAG_OVER_CLASS_NAME", { enumerable: true, get: function () { return drop_zone_1.DROP_ZONE_DRAG_OVER_CLASS_NAME; } });
 Object.defineProperty(exports, "bindDropZone", { enumerable: true, get: function () { return drop_zone_1.bindDropZone; } });
+var attention_pulse_1 = require("./attention-pulse");
+Object.defineProperty(exports, "ATTENTION_PULSE_CLASS_NAME", { enumerable: true, get: function () { return attention_pulse_1.ATTENTION_PULSE_CLASS_NAME; } });
+Object.defineProperty(exports, "startAttentionPulse", { enumerable: true, get: function () { return attention_pulse_1.startAttentionPulse; } });
