@@ -39,6 +39,11 @@
       "types": "./dist/drop-zone.d.ts",
       "require": "./dist/drop-zone.js",
       "default": "./dist/drop-zone.js"
+    },
+    "./attention-pulse": {
+      "types": "./dist/attention-pulse.d.ts",
+      "require": "./dist/attention-pulse.js",
+      "default": "./dist/attention-pulse.js"
     }
   },
   "sideEffects": [

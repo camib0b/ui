@@ -96,6 +96,7 @@ const preset = {
         },
         "number-positive": "hsl(var(--number-positive) / <alpha-value>)",
         "number-negative": "hsl(var(--number-negative) / <alpha-value>)",
+        "accent-teal": "hsl(var(--accent-teal) / <alpha-value>)",
       },
 
       borderRadius: {
@@ -170,6 +171,10 @@ const preset = {
         },
         "toast-out": {
           to: { opacity: "0", visibility: "hidden" },
+        },
+        "attention-pulse": {
+          "0%, 100%": { color: "hsl(var(--muted-foreground))" },
+          "50%": { color: "hsl(var(--accent-teal))" },
         },
       },
 

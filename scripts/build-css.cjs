@@ -33,6 +33,7 @@ const lightVariables = {
   "contrib-q2": "172 38% 78%",
   "contrib-q3": "172 54% 46%",
   "contrib-q4": "172 56% 38%",
+  "accent-teal": "172 56% 38%",
   "series-portfolio": "200 16% 32%",
   "series-benchmark": "220 6% 46%",
   "number-positive": "152 32% 28%",
@@ -77,6 +78,7 @@ const darkVariables = {
   "contrib-q2": "172 40% 20%",
   "contrib-q3": "172 52% 42%",
   "contrib-q4": "172 56% 52%",
+  "accent-teal": "172 56% 52%",
   "series-portfolio": "200 18% 74%",
   "series-benchmark": "220 8% 64%",
   "number-positive": "152 28% 68%",
@@ -249,6 +251,15 @@ ${renderKeyframes(keyframes)}
 
 .analytics-rise {
   animation: analytics-rise 250ms ease;
+}
+
+.attention-pulse {
+  animation-name: attention-pulse;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 600ms;
+  animation-iteration-count: 3;
+  animation-fill-mode: none;
 }
 
 .portfolio-sync-bar {
@@ -660,6 +671,7 @@ progress.progress.progress-success::-moz-progress-bar {
   }
 
   .analytics-rise,
+  .attention-pulse,
   .portfolio-sync-bar,
   .portfolio-skeleton-block,
   .animate-fade-up,
@@ -778,6 +790,8 @@ function assertPreset(preset) {
   assert(colors.series.benchmark.includes("--series-benchmark"), "missing series.benchmark");
   assert(colors["number-positive"].includes("--number-positive"), "missing number-positive");
   assert(colors["number-negative"].includes("--number-negative"), "missing number-negative");
+  assert(colors["accent-teal"].includes("--accent-teal"), "missing accent-teal");
+  assert(keyframes["attention-pulse"], "preset is missing keyframes.attention-pulse");
 
   const { transitionDuration, transitionTimingFunction } = preset.theme.extend;
   assert(transitionDuration.press === "var(--duration-press)", "press duration must be 80ms token");
@@ -871,6 +885,9 @@ function assertStylesheet(stylesheet) {
     "@keyframes row-drop",
     "@keyframes toast-in",
     "@keyframes toast-out",
+    "@keyframes attention-pulse",
+    "--accent-teal: 172 56% 38%;",
+    ".attention-pulse",
     "prefers-reduced-motion",
     "@media (hover: hover)",
     "translateY(-2px)",

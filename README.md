@@ -87,6 +87,22 @@ const unbindDropZone = bindDropZone(document.querySelector(".drop-zone"), functi
 
 The same function is exported from `@camib0b/ui`.
 
+### Attention pulse
+
+Hero contribution teal (`--accent-teal`, same HSL as `contrib-q4`). The `.attention-pulse` class eases text color from muted to teal and back three times (1.2s per cycle, 600ms delay). No scale, glow, or loop. `prefers-reduced-motion` disables the animation.
+
+`startAttentionPulse` adds the class and removes it on the first document click, file choice, drag, or when the animation ends.
+
+```html
+<button class="text-link" type="button" id="sample-match-button">Try the sample file</button>
+```
+
+```js
+const { startAttentionPulse } = require("@camib0b/ui/attention-pulse");
+
+startAttentionPulse(document.getElementById("sample-match-button"));
+```
+
 ### Reorderable rows
 
 A static `.row` is only a list row. Add `row-reorderable` for a grab cursor (`grabbing` while pressed, `default` when `draggable="false"`). `row-placeholder` is the dashed empty slot; put the visible contents in `row-body` so they hide while the slot is empty. `row-moved` is the dark foreground border on the row that moved. `row-dropped` plays the 8px, 320ms landing animation.
@@ -179,11 +195,12 @@ Named entry points:
 
 | Import | Contents |
 | --- | --- |
-| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle`, `bindDropZone` |
+| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle`, `bindDropZone`, `startAttentionPulse` |
 | `@camib0b/ui/preset` | Tailwind preset |
 | `@camib0b/ui/ui.css` | Prebuilt stylesheet |
 | `@camib0b/ui/header` | `SiteHeader` |
 | `@camib0b/ui/language` | Language provider and hook |
 | `@camib0b/ui/drop-zone` | `bindDropZone` for plain pages |
+| `@camib0b/ui/attention-pulse` | `startAttentionPulse` for plain pages |
 
 React and Tailwind are optional peer dependencies. A plain HTML page only needs the CSS file.
