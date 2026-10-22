@@ -109,6 +109,18 @@ const preset = {
         "elev-3": "var(--shadow-elev-3)",
       },
 
+      transitionDuration: {
+        press: "var(--duration-press)",
+        button: "var(--duration-button)",
+        row: "var(--duration-row)",
+        drop: "var(--duration-drop)",
+      },
+
+      transitionTimingFunction: {
+        "out-strong": "var(--ease-out-strong)",
+        color: "var(--color-ease)",
+      },
+
       keyframes: {
         "analytics-rise": {
           from: { opacity: "0" },
@@ -148,6 +160,17 @@ const preset = {
             clipPath: "inset(-12px)",
           },
         },
+        "row-drop": {
+          from: { opacity: "0", transform: "translateY(-8px)" },
+          to: { opacity: "1", transform: "none" },
+        },
+        "toast-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "toast-out": {
+          to: { opacity: "0", visibility: "hidden" },
+        },
       },
 
       animation: {
@@ -158,6 +181,9 @@ const preset = {
         "contribution-flag":
           "contribution-flag var(--contribution-column-duration, 400ms) var(--ease-hero) both",
         "curtain-fall": "curtain-fall var(--curtain-duration) var(--ease-hero) both",
+        "row-drop": "row-drop var(--duration-drop) var(--ease-out-strong) both",
+        "toast-in": "toast-in var(--duration-drop) var(--ease-out-strong) both",
+        "toast-out": "toast-out var(--duration-row) var(--color-ease) forwards",
       },
     },
   },

@@ -3,3 +3,4 @@ export type { Language, LanguageContextValue, LanguageMessages, LanguageProvider
 export { LanguageToggle } from "./language-toggle";
 export { SiteHeader } from "./site-header";
 export type { SiteHeaderProps } from "./site-header";
+export { DROP_ZONE_DRAG_OVER_CLASS_NAME, bindDropZone } from "./drop-zone";
