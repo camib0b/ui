@@ -46,19 +46,21 @@ Buttons, icon buttons, text links, the dismiss button, and inputs share one focu
 
 ### Durations and easing
 
-Both curves are CSS variables and Tailwind timing utilities (`ease-out-strong`, `ease-color`).
+These curves are CSS variables and Tailwind timing utilities (`ease-out-strong`, `ease-hero`, `ease-color`).
 
 | Token | Value | Use |
 | --- | --- | --- |
 | `--duration-press` | 80ms | Press scale and the primary press |
+| `--duration-color` | 140ms | Color, border, and background |
 | `--duration-button` | 140ms | Button color, lift, and shadow |
 | `--duration-row` | 180ms | Row color and border |
 | `--duration-drop` | 320ms | Row landing and toast entrance |
 | `--duration-toast` | 6s | Toast hold before it closes |
 | `--ease-out-strong` | `cubic-bezier(0.23, 1, 0.32, 1)` | Movement, including the primary lift and its shadow |
+| `--ease-hero` | `cubic-bezier(0.16, 1, 0.3, 1)` | Hero fade, curtain reveal, contribution pattern |
 | `--color-ease` | `cubic-bezier(0.4, 0, 0.2, 1)` | Color, border, and background |
 
-Tailwind utilities: `duration-press`, `duration-button`, `duration-row`, `duration-drop`.
+Tailwind utilities: `duration-press`, `duration-color`, `duration-button`, `duration-row`, `duration-drop`. Shadows: `shadow-elev-1`, `shadow-elev-2`, `shadow-elev-3`.
 
 `prefers-reduced-motion` removes movement and animation. Color and shadow still change: the primary hover shadow still appears, and the press still drops that shadow. The toast stays put and disappears after 6 seconds without fading.
 
@@ -149,6 +151,45 @@ A square bordered box, fixed to the bottom right. It fades up 8px over 320ms, ho
 </div>
 ```
 
+## Tokens without element styles
+
+`@camib0b/ui/tokens.css` is the same custom properties as `ui.css` (`:root` and `.dark`) and nothing else. Another app can import it without restyling `html`, `body`, links, or buttons. Add `class="dark"` to the root for the dark palette.
+
+`@camib0b/ui/theme-v4.css` maps those tokens onto Tailwind v4 utilities with `@theme inline`, and it imports `tokens.css`. From the app stylesheet:
+
+```css
+@import "tailwindcss";
+@import "@camib0b/ui/theme-v4.css";
+```
+
+Utilities include `bg-background`, `text-foreground`, `rounded-lg`, `shadow-elev-1`, `shadow-elev-2`, `shadow-elev-3`, `ease-out-strong`, `ease-hero`, `ease-color`, `duration-press`, `duration-color`, `duration-button`, `duration-row`, `duration-drop`, and `duration-toast`. The v3 preset exposes the same additions (`shadow-elev-1`, `duration-color`, `ease-hero`) next to the existing ones.
+
+## Motion
+
+`ui.css` includes the motion classes. `@camib0b/ui/motion.css` is those classes alone, with no element resets. Import `tokens.css` first. `prefers-reduced-motion` drops transforms and movement and keeps opacity and color transitions.
+
+| Class | What it does |
+| --- | --- |
+| `link-underline` | Foreground underline that scales in from the left over 250ms `ease-out-strong` |
+| `text-press` | Color over 200ms `--color-ease`, scale to 0.97 on press |
+| `contact-reveal` | Opacity and a 4px slide. Open 180ms, close 120ms. `data-state="open"` |
+| `copy-swap-icon` | Cross-fade with `data-visible="true"` or `"false"` inside `copy-swap-icon-stack` |
+| `curtain-reveal-item` | Curtain fall. `CurtainReveal` sets `data-curtain` and `--curtain-index` |
+| `press` | Scale to 0.97 on `:active` over `--duration-press` (80ms) `--ease-out-strong`. Transform only |
+| `segmented` | Square track and a sliding thumb (`::before`) from `--segmented-index` / `--segmented-count`, or `data-segment` / `data-count` |
+| `tap-reset` | Clears the tap highlight and sets `touch-action: manipulation` |
+
+```html
+<a class="link-underline" href="/capital">Capital</a>
+<button class="text-press press tap-reset" type="button">Copy</button>
+<div class="segmented" data-count="2" data-segment="0" role="group" aria-label="Language">
+  <button type="button" aria-pressed="true">EN</button>
+  <button type="button" aria-pressed="false">ES</button>
+</div>
+```
+
+`CurtainReveal` and `useCurtainReveal` stagger direct children. `useRevealPresence` keeps a `contact-reveal` panel mounted through the 120ms close (`REVEAL_CLOSE_DURATION_MS`). `PatternedBackground` paints the fixed cross and noise tiles.
+
 ## React and Tailwind
 
 The concat tool (Vite, React, Tailwind) uses the preset, the stylesheet, and the components.
@@ -195,12 +236,18 @@ Named entry points:
 
 | Import | Contents |
 | --- | --- |
-| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle`, `bindDropZone`, `startAttentionPulse` |
+| `@camib0b/ui` | `LanguageProvider`, `useLanguage`, `languageFromDevice`, `SiteHeader`, `LanguageToggle`, `bindDropZone`, `startAttentionPulse`, `CurtainReveal`, `useCurtainReveal`, `CurtainPhase`, `PatternedBackground`, `useRevealPresence`, `REVEAL_CLOSE_DURATION_MS` |
 | `@camib0b/ui/preset` | Tailwind preset |
-| `@camib0b/ui/ui.css` | Prebuilt stylesheet |
+| `@camib0b/ui/ui.css` | Prebuilt stylesheet, including motion classes |
+| `@camib0b/ui/tokens.css` | Color, radius, shadow, duration, and easing tokens only |
+| `@camib0b/ui/theme-v4.css` | Tailwind v4 `@theme` map of those tokens |
+| `@camib0b/ui/motion.css` | Motion classes without element resets |
 | `@camib0b/ui/header` | `SiteHeader` |
 | `@camib0b/ui/language` | Language provider and hook |
 | `@camib0b/ui/drop-zone` | `bindDropZone` for plain pages |
 | `@camib0b/ui/attention-pulse` | `startAttentionPulse` for plain pages |
+| `@camib0b/ui/curtain-reveal` | `CurtainReveal`, `useCurtainReveal`, `CurtainPhase` |
+| `@camib0b/ui/patterned-background` | `PatternedBackground` |
+| `@camib0b/ui/reveal` | `useRevealPresence`, `REVEAL_CLOSE_DURATION_MS` |
 
 React and Tailwind are optional peer dependencies. A plain HTML page only needs the CSS file.

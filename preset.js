@@ -106,12 +106,14 @@ const preset = {
       },
 
       boxShadow: {
+        "elev-1": "var(--shadow-elev-1)",
         "elev-2": "var(--shadow-elev-2)",
         "elev-3": "var(--shadow-elev-3)",
       },
 
       transitionDuration: {
         press: "var(--duration-press)",
+        color: "var(--duration-color)",
         button: "var(--duration-button)",
         row: "var(--duration-row)",
         drop: "var(--duration-drop)",
@@ -119,6 +121,7 @@ const preset = {
 
       transitionTimingFunction: {
         "out-strong": "var(--ease-out-strong)",
+        hero: "var(--ease-hero)",
         color: "var(--color-ease)",
       },
 

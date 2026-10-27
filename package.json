@@ -25,6 +25,9 @@
       "default": "./preset.js"
     },
     "./ui.css": "./dist/ui.css",
+    "./tokens.css": "./dist/tokens.css",
+    "./theme-v4.css": "./dist/theme-v4.css",
+    "./motion.css": "./dist/motion.css",
     "./header": {
       "types": "./dist/site-header.d.ts",
       "require": "./dist/site-header.js",
@@ -44,13 +47,32 @@
       "types": "./dist/attention-pulse.d.ts",
       "require": "./dist/attention-pulse.js",
       "default": "./dist/attention-pulse.js"
+    },
+    "./curtain-reveal": {
+      "types": "./dist/curtain-reveal.d.ts",
+      "require": "./dist/curtain-reveal.js",
+      "default": "./dist/curtain-reveal.js"
+    },
+    "./patterned-background": {
+      "types": "./dist/patterned-background.d.ts",
+      "require": "./dist/patterned-background.js",
+      "default": "./dist/patterned-background.js"
+    },
+    "./reveal": {
+      "types": "./dist/use-reveal-presence.d.ts",
+      "require": "./dist/use-reveal-presence.js",
+      "default": "./dist/use-reveal-presence.js"
     }
   },
   "sideEffects": [
-    "./dist/ui.css"
+    "./dist/ui.css",
+    "./dist/tokens.css",
+    "./dist/theme-v4.css",
+    "./dist/motion.css"
   ],
   "scripts": {
-    "build": "node scripts/build-css.cjs && tsc -p tsconfig.json"
+    "build": "node scripts/build-css.cjs && tsc -p tsconfig.json",
+    "test": "node scripts/build-css.cjs"
   },
   "peerDependencies": {
     "react": ">=18",
