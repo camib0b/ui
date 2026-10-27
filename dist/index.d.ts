@@ -5,3 +5,7 @@ export { SiteHeader } from "./site-header";
 export type { SiteHeaderProps } from "./site-header";
 export { DROP_ZONE_DRAG_OVER_CLASS_NAME, bindDropZone } from "./drop-zone";
 export { ATTENTION_PULSE_CLASS_NAME, startAttentionPulse } from "./attention-pulse";
+export { CurtainReveal, useCurtainReveal } from "./curtain-reveal";
+export type { CurtainPhase } from "./curtain-reveal";
+export { PatternedBackground } from "./patterned-background";
+export { REVEAL_CLOSE_DURATION_MS, useRevealPresence } from "./use-reveal-presence";

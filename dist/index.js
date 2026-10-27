@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startAttentionPulse = exports.ATTENTION_PULSE_CLASS_NAME = exports.bindDropZone = exports.DROP_ZONE_DRAG_OVER_CLASS_NAME = exports.SiteHeader = exports.LanguageToggle = exports.useLanguage = exports.languageFromDevice = exports.LanguageProvider = exports.LANGUAGE_STORAGE_KEY = void 0;
+exports.useRevealPresence = exports.REVEAL_CLOSE_DURATION_MS = exports.PatternedBackground = exports.useCurtainReveal = exports.CurtainReveal = exports.startAttentionPulse = exports.ATTENTION_PULSE_CLASS_NAME = exports.bindDropZone = exports.DROP_ZONE_DRAG_OVER_CLASS_NAME = exports.SiteHeader = exports.LanguageToggle = exports.useLanguage = exports.languageFromDevice = exports.LanguageProvider = exports.LANGUAGE_STORAGE_KEY = void 0;
 var language_context_1 = require("./language-context");
 Object.defineProperty(exports, "LANGUAGE_STORAGE_KEY", { enumerable: true, get: function () { return language_context_1.LANGUAGE_STORAGE_KEY; } });
 Object.defineProperty(exports, "LanguageProvider", { enumerable: true, get: function () { return language_context_1.LanguageProvider; } });
@@ -16,3 +16,11 @@ Object.defineProperty(exports, "bindDropZone", { enumerable: true, get: function
 var attention_pulse_1 = require("./attention-pulse");
 Object.defineProperty(exports, "ATTENTION_PULSE_CLASS_NAME", { enumerable: true, get: function () { return attention_pulse_1.ATTENTION_PULSE_CLASS_NAME; } });
 Object.defineProperty(exports, "startAttentionPulse", { enumerable: true, get: function () { return attention_pulse_1.startAttentionPulse; } });
+var curtain_reveal_1 = require("./curtain-reveal");
+Object.defineProperty(exports, "CurtainReveal", { enumerable: true, get: function () { return curtain_reveal_1.CurtainReveal; } });
+Object.defineProperty(exports, "useCurtainReveal", { enumerable: true, get: function () { return curtain_reveal_1.useCurtainReveal; } });
+var patterned_background_1 = require("./patterned-background");
+Object.defineProperty(exports, "PatternedBackground", { enumerable: true, get: function () { return patterned_background_1.PatternedBackground; } });
+var use_reveal_presence_1 = require("./use-reveal-presence");
+Object.defineProperty(exports, "REVEAL_CLOSE_DURATION_MS", { enumerable: true, get: function () { return use_reveal_presence_1.REVEAL_CLOSE_DURATION_MS; } });
+Object.defineProperty(exports, "useRevealPresence", { enumerable: true, get: function () { return use_reveal_presence_1.useRevealPresence; } });

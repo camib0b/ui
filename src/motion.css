@@ -1,0 +1,286 @@
+/* Motion classes copied from camilaescudero.cl. No element resets.
+   Import tokens.css (or ui.css) before this file. */
+
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: hsl(var(--foreground));
+  transform-origin: bottom right;
+  transform: scaleX(0);
+}
+
+@media (hover: hover) {
+  .link-underline::after {
+    transition: transform 250ms var(--ease-out-strong);
+  }
+
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}
+
+/* Landing motion. Close duration matches REVEAL_CLOSE_DURATION_MS. */
+.contact-reveal {
+  opacity: 0;
+  transform: translateX(-4px);
+  pointer-events: none;
+  transition:
+    opacity 120ms var(--ease-out-strong),
+    transform 120ms var(--ease-out-strong);
+}
+
+.contact-reveal[data-state="open"] {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  transition-duration: 180ms, 180ms;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+
+.copy-swap-icon-stack {
+  display: inline-grid;
+  place-items: center;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.copy-swap-icon {
+  grid-area: 1 / 1;
+  transition:
+    opacity 150ms var(--ease-out-strong),
+    transform 150ms var(--ease-out-strong),
+    filter 150ms var(--ease-out-strong);
+}
+
+.copy-swap-icon[data-visible="false"] {
+  opacity: 0;
+  transform: scale(0.8);
+  filter: blur(2px);
+}
+
+.copy-swap-icon[data-visible="true"] {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* Press feedback. Colour timing stays at the site's 200ms hover. */
+.text-press {
+  display: inline-block;
+}
+
+.link-underline,
+.text-press {
+  transition:
+    color 200ms var(--color-ease),
+    background-color 200ms var(--color-ease),
+    border-color 200ms var(--color-ease),
+    transform 100ms var(--ease-out-strong);
+}
+
+.link-underline:active,
+.text-press:active {
+  transform: scale(0.97);
+}
+
+/* List rows fall in from the same distance and ease as the hero fade-up.
+   Default (no data-curtain) stays visible for no-JS and unsupported observers. */
+.curtain-reveal-item[data-curtain="armed"] {
+  opacity: 0;
+  transform: translateY(var(--curtain-offset));
+  clip-path: inset(0 0 100% 0);
+}
+
+.curtain-reveal-item[data-curtain="playing"] {
+  animation: curtain-fall var(--curtain-duration) var(--ease-hero) both;
+  animation-delay: calc(var(--curtain-index, 0) * var(--curtain-stagger));
+}
+
+.curtain-reveal-item[data-curtain="armed"]:focus-within,
+.curtain-reveal-item[data-curtain="playing"]:focus-within {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+}
+
+.press {
+  transition: transform var(--duration-press) var(--ease-out-strong);
+}
+
+.press:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+  transform: scale(0.97);
+}
+
+.tap-reset {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Square segmented track. The thumb is ::before.
+   Position comes from --segmented-index and --segmented-count.
+   data-segment and data-count set those variables for the common sizes. */
+.segmented {
+  --segmented-index: 0;
+  --segmented-count: 2;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  padding: 2px;
+  border: 1px solid hsl(var(--muted-foreground));
+  border-radius: 0;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.segmented[data-count="2"] { --segmented-count: 2; }
+.segmented[data-count="3"] { --segmented-count: 3; }
+.segmented[data-count="4"] { --segmented-count: 4; }
+.segmented[data-count="5"] { --segmented-count: 5; }
+.segmented[data-count="6"] { --segmented-count: 6; }
+
+.segmented[data-segment="0"] { --segmented-index: 0; }
+.segmented[data-segment="1"] { --segmented-index: 1; }
+.segmented[data-segment="2"] { --segmented-index: 2; }
+.segmented[data-segment="3"] { --segmented-index: 3; }
+.segmented[data-segment="4"] { --segmented-index: 4; }
+.segmented[data-segment="5"] { --segmented-index: 5; }
+
+.segmented::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 2px;
+  bottom: 2px;
+  left: calc(2px + (100% - 4px) * var(--segmented-index) / var(--segmented-count));
+  width: calc((100% - 4px) / var(--segmented-count));
+  border-radius: 0;
+  background: hsl(var(--primary));
+  box-shadow: var(--shadow-elev-1);
+  transition: left var(--duration-button) var(--ease-out-strong);
+}
+
+.segmented > button {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  margin: 0;
+  min-width: 2.5rem;
+  padding: 0.375rem 0.75rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: hsl(var(--foreground));
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35rem;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    color var(--duration-color) var(--color-ease),
+    background-color var(--duration-color) var(--color-ease);
+}
+
+.segmented > button[aria-pressed="true"],
+.segmented > button[aria-selected="true"] {
+  color: hsl(var(--primary-foreground));
+}
+
+@media (hover: hover) {
+  .segmented > button:hover:not(:disabled):not(.is-disabled):not([aria-disabled="true"]):not([aria-pressed="true"]):not([aria-selected="true"]) {
+    background: hsl(var(--accent));
+    color: hsl(var(--foreground));
+  }
+}
+
+.segmented > button:focus-visible {
+  outline: 1px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.segmented > button:disabled,
+.segmented > button.is-disabled,
+.segmented > button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-underline::after {
+    transition: none;
+  }
+
+  .link-underline,
+  .text-press {
+    transition:
+      color 200ms var(--color-ease),
+      background-color 200ms var(--color-ease),
+      border-color 200ms var(--color-ease);
+  }
+
+  .link-underline:active,
+  .text-press:active,
+  .press:active:not(:disabled):not(.is-disabled):not([aria-disabled="true"]) {
+    transform: none;
+  }
+
+  .contact-reveal,
+  .contact-reveal[data-state="open"] {
+    transform: none;
+    transition: opacity 120ms var(--ease-out-strong);
+  }
+
+  .contact-reveal[data-state="open"] {
+    transition-duration: 180ms;
+
+    @starting-style {
+      opacity: 0;
+      transform: none;
+    }
+  }
+
+  .copy-swap-icon,
+  .copy-swap-icon[data-visible="false"],
+  .copy-swap-icon[data-visible="true"] {
+    transform: none;
+    filter: none;
+    transition: opacity 150ms var(--ease-out-strong);
+  }
+
+  .curtain-reveal-item[data-curtain="armed"],
+  .curtain-reveal-item[data-curtain="playing"] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+
+  .segmented::before {
+    transition: none;
+  }
+}
+
+@media print {
+  .curtain-reveal-item[data-curtain="armed"],
+  .curtain-reveal-item[data-curtain="playing"] {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
